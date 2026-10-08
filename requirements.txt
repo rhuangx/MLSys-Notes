@@ -1,0 +1,13 @@
+# torch and triton are pinned as a pair: torch 2.14.1 requires triton~=3.8.0 on Linux.
+torch==2.14.1
+triton==3.8.0; platform_system == "Linux"
+numpy==2.5.3  # torch interop, and required by TRITON_INTERPRET=1
+
+# loading pretrained weights
+huggingface_hub==1.33.0
+safetensors==0.8.0
+tokenizers==0.23.2
+
+# notebook tests
+pytest==9.1.1
+nbmake==1.5.5

@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  notebooks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        # Install the CPU-only torch wheel first (no multi-GB CUDA libraries). It satisfies
+        # the torch pin in requirements.txt, so the second install leaves it in place.
+        run: |
+          pip install "$(grep '^torch==' requirements.txt)" --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+      - name: Execute notebooks
+        env:
+          TRITON_INTERPRET: "1"  # run Triton kernels on CPU through the interpreter
+        run: pytest --nbmake notebooks/
